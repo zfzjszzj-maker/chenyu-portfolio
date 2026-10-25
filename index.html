@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>陈屿 · 摄影与设计</title>
+<style>
+  :root{
+    --bg:#F6F1E7;
+    --surface:#FBF8F0;
+    --ink:#2B2721;
+    --ink-soft:#6E675C;
+    --ink-faint:#6F6859;
+    --line:#E3DCCB;
+    --line-strong:#CFC6B0;
+    --accent:#8A6236;
+    --radius:6px;
+    --maxw:1180px;
+    --pad:24px;
+    --sans:"PingFang SC","Hiragino Sans GB","Noto Sans SC","Source Han Sans SC","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
+    --serif:"Iowan Old Style","Baskerville","Songti SC","Noto Serif SC",Georgia,serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--sans);
+    font-size:16px;
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  a{color:inherit;text-decoration:none;}
+  img{display:block;max-width:100%;}
+  ::selection{background:var(--accent);color:#fff;}
+
+  .wrap{max-width:var(--maxw);margin:0 auto;padding-left:var(--pad);padding-right:var(--pad);}
+
+  /* ---------- 顶部导航 ---------- */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(246,241,231,.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{
+    display:flex;align-items:center;justify-content:space-between;
+    height:64px;
+  }
+  .brand{
+    font-size:17px;font-weight:600;letter-spacing:.02em;
+  }
+  .brand em{font-style:normal;color:var(--accent);}
+  .nav-links{display:flex;gap:28px;list-style:none;}
+  .nav-links a{
+    font-size:14.5px;color:var(--ink-soft);
+    transition:color .18s ease;
+    position:relative;
+  }
+  .nav-links a::after{
+    content:"";position:absolute;left:0;bottom:-3px;height:1px;width:100%;
+    background:var(--ink);transform:scaleX(0);transform-origin:left;
+    transition:transform .25s ease;
+  }
+  .nav-links a:hover{color:var(--ink);}
+  .nav-links a:hover::after{transform:scaleX(1);}
+
+  /* ---------- 首屏 ---------- */
+  .hero{padding:72px 0 40px;}
+  .hero h1{
+    font-size:clamp(34px,5.2vw,56px);
+    line-height:1.16;font-weight:600;letter-spacing:.01em;
+  }
+  .hero .lead{
+    margin-top:18px;max-width:520px;
+    font-size:16.5px;color:var(--ink-soft);
+  }
+  .hero .lead strong{color:var(--ink);font-weight:600;}
+
+  /* ---------- 筛选 ---------- */
+  .filters{
+    display:flex;align-items:center;gap:6px;
+    margin:44px 0 6px;
+    border-bottom:1px solid var(--line);
+    padding-bottom:0;
+    position:relative;
+    overflow-x:auto;
+    scrollbar-width:none;
+  }
+  .filters::-webkit-scrollbar{display:none;}
+  .filter-btn{
+    appearance:none;border:0;background:none;cursor:pointer;
+    font-family:inherit;font-size:15px;color:var(--ink-soft);
+    padding:10px 14px;white-space:nowrap;
+    border-bottom:2px solid transparent;
+    transition:color .18s ease,border-color .18s ease;
+  }
+  .filter-btn:hover{color:var(--ink);}
+  .filter-btn.active{color:var(--ink);border-bottom-color:var(--accent);font-weight:600;}
+  .count{
+    margin-left:auto;font-size:13px;color:var(--ink-faint);
+    font-variant-numeric:tabular-nums;white-space:nowrap;
+  }
+
+  /* ---------- 作品网格 ---------- */
+  .grid{
+    display:grid;grid-template-columns:repeat(3,1fr);
+    gap:40px 28px;
+    padding:32px 0 8px;
+  }
+  .card{
+    opacity:0;transform:translateY(14px);
+    animation:rise .55s cubic-bezier(.2,.7,.3,1) forwards;
+  }
+  @keyframes rise{
+    to{opacity:1;transform:translateY(0);}
+  }
+  .card.hidden{display:none;}
+  .card .frame{
+    position:relative;overflow:hidden;border-radius:var(--radius);
+    background:var(--surface);
+    box-shadow:0 1px 2px rgba(43,39,33,.05);
+  }
+  .card img{
+    width:100%;aspect-ratio:4/3;object-fit:cover;
+    transition:transform .5s cubic-bezier(.2,.7,.3,1);
+  }
+  .card:hover img{transform:scale(1.035);}
+  .card .tag{
+    position:absolute;top:12px;left:12px;
+    font-size:12px;letter-spacing:.08em;
+    color:var(--ink);background:rgba(246,241,231,.88);
+    padding:3px 10px;border-radius:999px;
+    backdrop-filter:blur(4px);
+    border:1px solid var(--line-strong);
+  }
+  .card .meta{
+    display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+    padding-top:12px;
+  }
+  .card h3{
+    font-size:16.5px;font-weight:600;line-height:1.35;
+  }
+  .card .year{
+    font-size:13px;color:var(--ink-faint);
+    font-variant-numeric:tabular-nums;white-space:nowrap;
+  }
+  .card .desc{
+    margin-top:4px;font-size:14px;color:var(--ink-soft);line-height:1.6;
+  }
+  .card.essay .frame img{aspect-ratio:16/10;}
+  .card.essay h3{font-family:var(--serif);font-weight:600;}
+
+  /* ---------- 关于 ---------- */
+  .about,.contact{
+    transition:opacity .6s ease,transform .6s cubic-bezier(.2,.7,.3,1);
+  }
+  .about.pre,.contact.pre{opacity:0;transform:translateY(18px);}
+  .about.in,.contact.in{opacity:1;transform:translateY(0);}
+  .about{
+    border-top:1px solid var(--line);
+    padding:72px 0;
+  }
+  .about .cols{
+    display:grid;grid-template-columns:1fr 1.6fr;gap:48px;
+  }
+  .about h2{
+    font-size:15px;font-weight:600;letter-spacing:.12em;color:var(--ink);
+    text-transform:uppercase;
+  }
+  .about p{
+    font-size:16.5px;line-height:1.85;color:var(--ink-soft);
+    max-width:640px;
+  }
+  .about p + p{margin-top:16px;}
+  .about p strong{color:var(--ink);font-weight:600;}
+  .services{
+    margin-top:28px;display:flex;flex-wrap:wrap;gap:10px;
+  }
+  .services span{
+    font-size:13.5px;color:var(--ink-soft);
+    border:1px solid var(--line-strong);border-radius:999px;
+    padding:5px 14px;
+  }
+
+  /* ---------- 联系 ---------- */
+  .contact{
+    border-top:1px solid var(--line);
+    padding:64px 0;
+    display:flex;align-items:center;justify-content:space-between;gap:32px;flex-wrap:wrap;
+  }
+  .contact h2{
+    font-size:clamp(22px,3vw,30px);font-weight:600;line-height:1.3;
+  }
+  .contact .email{
+    display:inline-flex;align-items:center;gap:10px;
+    font-size:16px;color:var(--ink);
+    border-bottom:1px solid var(--ink);
+    padding-bottom:2px;
+    transition:border-color .2s ease,color .2s ease;
+  }
+  .contact .email:hover{color:var(--accent);border-color:var(--accent);}
+  .contact .socials{
+    display:flex;gap:20px;
+  }
+  .contact .socials a{
+    font-size:14.5px;color:var(--ink-soft);
+    transition:color .18s ease;
+  }
+  .contact .socials a:hover{color:var(--accent);}
+
+  /* ---------- 页脚 ---------- */
+  footer{
+    border-top:1px solid var(--line);
+    padding:28px 0 40px;
+  }
+  .foot{
+    display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    font-size:13px;color:var(--ink-faint);
+  }
+
+  /* ---------- 响应式 ---------- */
+  @media (max-width:900px){
+    .grid{grid-template-columns:repeat(2,1fr);}
+    .about .cols{grid-template-columns:1fr;}
+  }
+  @media (max-width:640px){
+    :root{--pad:20px;}
+    .grid{grid-template-columns:1fr;gap:34px;}
+    .hero{padding:48px 0 32px;}
+    .nav-links{gap:20px;}
+    .contact{flex-direction:column;align-items:flex-start;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    *,*::before,*::after{animation-duration:.001s !important;transition-duration:.001s !important;}
+    .card{opacity:1;transform:none;}
+    .about.pre,.contact.pre{opacity:1;transform:none;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a href="#top" class="brand">陈屿 <em>Chen Yu</em></a>
+    <ul class="nav-links">
+      <li><a href="#works">作品</a></li>
+      <li><a href="#about">关于</a></li>
+      <li><a href="#contact">联系</a></li>
+    </ul>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- 首屏 -->
+  <section class="wrap hero" id="works">
+    <h1>摄影 · 设计 · 文字</h1>
+    <p class="lead">我是<strong>陈屿</strong>，一名摄影师与设计师。用镜头收集光线，用版面整理秩序，也把旅途中和日常里的想法写成文章。</p>
+  </section>
+
+  <!-- 作品 -->
+  <section class="wrap">
+    <div class="filters" role="tablist" aria-label="作品分类">
+      <button class="filter-btn active" data-filter="all" role="tab" aria-selected="true">全部</button>
+      <button class="filter-btn" data-filter="photo" role="tab" aria-selected="false">摄影</button>
+      <button class="filter-btn" data-filter="design" role="tab" aria-selected="false">设计</button>
+      <button class="filter-btn" data-filter="essay" role="tab" aria-selected="false">文章</button>
+      <span class="count" id="count">10 件作品</span>
+    </div>
+
+    <div class="grid" id="grid">
+
+      <!-- 摄影 -->
+      <article class="card photo">
+        <a class="frame" href="#" aria-label="白墙之下，摄影作品">
+          <img src="assets/photo-white-wall.jpg" alt="白墙之下——米白色连衣裙女性站在白色建筑前">
+          <span class="tag">摄影</span>
+        </a>
+        <div class="meta"><h3>白墙之下</h3><span class="year">2025</span></div>
+        <p class="desc">旅拍人像 · 午后光线的柔和轮廓</p>
+      </article>
+
+      <article class="card photo">
+        <a class="frame" href="#" aria-label="黄昏街道，摄影作品">
+          <img src="assets/photo-street.jpg" alt="黄昏街道——逆光中的行人剪影">
+          <span class="tag">摄影</span>
+        </a>
+        <div class="meta"><h3>黄昏街道</h3><span class="year">2024</span></div>
+        <p class="desc">街头纪实 · 日落前的城市瞬间</p>
+      </article>
+
+      <article class="card photo">
+        <a class="frame" href="#" aria-label="海与日落，摄影作品">
+          <img src="assets/photo-seaside.jpg" alt="海与日落——沙滩上望向大海的人">
+          <span class="tag">摄影</span>
+        </a>
+        <div class="meta"><h3>海与日落</h3><span class="year">2024</span></div>
+        <p class="desc">风光旅拍 · 一个人的海岸</p>
+      </article>
+
+      <article class="card photo">
+        <a class="frame" href="#" aria-label="窗边的光，摄影作品">
+          <img src="assets/photo-window.jpg" alt="窗边的光——逆光下的室内侧脸人像">
+          <span class="tag">摄影</span>
+        </a>
+        <div class="meta"><h3>窗边的光</h3><span class="year">2023</span></div>
+        <p class="desc">室内人像 · 自然光的安静时刻</p>
+      </article>
+
+      <!-- 设计 -->
+      <article class="card design">
+        <a class="frame" href="#" aria-label="网格与留白，设计作品">
+          <img src="assets/design-editorial.jpg" alt="网格与留白——摊开的画册与排版">
+          <span class="tag">设计</span>
+        </a>
+        <div class="meta"><h3>网格与留白</h3><span class="year">2025</span></div>
+        <p class="desc">品牌画册 · 编辑排版与版面系统</p>
+      </article>
+
+      <article class="card design">
+        <a class="frame" href="#" aria-label="米色计划，设计作品">
+          <img src="assets/design-packaging.jpg" alt="米色计划——浅米色包装盒组合">
+          <span class="tag">设计</span>
+        </a>
+        <div class="meta"><h3>米色计划</h3><span class="year">2024</span></div>
+        <p class="desc">产品包装 · 克制配色与结构</p>
+      </article>
+
+      <article class="card design">
+        <a class="frame" href="#" aria-label="静默的雕塑，设计作品">
+          <img src="assets/design-figure.jpg" alt="静默的雕塑——米白色潮玩雕塑摆件">
+          <span class="tag">设计</span>
+        </a>
+        <div class="meta"><h3>静默的雕塑</h3><span class="year">2024</span></div>
+        <p class="desc">潮玩 IP · 造型与情绪的表达</p>
+      </article>
+
+      <!-- 文章 -->
+      <article class="card essay">
+        <a class="frame" href="#" aria-label="光的形状，文章">
+          <img src="assets/essay-light.jpg" alt="光的形状——窗格光影落在米色墙面上">
+          <span class="tag">文章</span>
+        </a>
+        <div class="meta"><h3>光的形状</h3><span class="year">2026</span></div>
+        <p class="desc">关于拍照时如何等光、追光的一点心得。</p>
+      </article>
+
+      <article class="card essay">
+        <a class="frame" href="#" aria-label="一杯茶的时间，文章">
+          <img src="assets/essay-book.jpg" alt="一杯茶的时间——桌面上的书与热茶">
+          <span class="tag">文章</span>
+        </a>
+        <div class="meta"><h3>一杯茶的时间</h3><span class="year">2026</span></div>
+        <p class="desc">工作室里最常发生的，是停下来喝口茶。</p>
+      </article>
+
+      <article class="card essay">
+        <a class="frame" href="#" aria-label="植物与窗，文章">
+          <img src="assets/essay-plant.jpg" alt="植物与窗——窗台上绿植的百叶窗光影">
+          <span class="tag">文章</span>
+        </a>
+        <div class="meta"><h3>植物与窗</h3><span class="year">2025</span></div>
+        <p class="desc">把窗台整理干净，光线就自己进来了。</p>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- 关于 -->
+  <section class="wrap about" id="about">
+    <div class="cols">
+      <h2>关于</h2>
+      <div>
+        <p>我常年在路上拍摄，也常年在桌前做设计。<strong>摄影</strong>是我的眼睛，<strong>设计</strong>是我的手，<strong>文字</strong>是整理思考的方式——三样东西轮流工作，互相补给。</p>
+        <p>从人像旅拍到品牌视觉，从一盒包装到一个角色，我关心的始终是：<strong>东西本身要干净、准确、耐看</strong>。</p>
+        <div class="services">
+          <span>人像摄影</span><span>旅拍跟拍</span><span>品牌设计</span><span>包装与文创</span><span>摄影随笔</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 联系 -->
+  <section class="wrap contact" id="contact">
+    <h2>有拍摄或设计的想法？<br>欢迎写信来聊聊。</h2>
+    <div>
+      <a class="email" href="mailto:hello@chenyu.studio">hello@chenyu.studio ↗</a>
+      <div class="socials" style="margin-top:16px;">
+        <a href="#" aria-label="站酷主页">站酷</a>
+        <a href="#" aria-label="小红书主页">小红书</a>
+        <a href="#" aria-label="Instagram 主页">Instagram</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span>© 2026 陈屿 · 摄影与设计</span>
+    <span>记录光线，也记录日常</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var grid=document.getElementById('grid');
+  var cards=Array.prototype.slice.call(grid.querySelectorAll('.card'));
+  var count=document.getElementById('count');
+  var btns=Array.prototype.slice.call(document.querySelectorAll('.filter-btn'));
+
+  function apply(filter){
+    var visible=0;
+    cards.forEach(function(card,i){
+      var show=(filter==='all'||card.classList.contains(filter));
+      card.classList.toggle('hidden',!show);
+      if(show){
+        visible++;
+        card.style.animationDelay=(i%6)*45+'ms';
+      }
+    });
+    count.textContent=visible+' 件作品';
+  }
+
+  btns.forEach(function(btn){
+    btn.addEventListener('click',function(){
+      btns.forEach(function(b){b.classList.remove('active');b.setAttribute('aria-selected','false');});
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected','true');
+      apply(btn.getAttribute('data-filter'));
+    });
+  });
+
+  apply('all');
+
+  // 关于、联系区块滚动淡入（JS 可用时先置为隐藏态再观察）
+  var sections=Array.prototype.slice.call(document.querySelectorAll('.about,.contact'));
+  if(!('IntersectionObserver' in window)){
+    sections.forEach(function(el){el.classList.add('in');});
+  }else{
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}
+      });
+    },{threshold:.15});
+    sections.forEach(function(el){
+      el.classList.add('pre');
+      io.observe(el);
+    });
+  }
+})();
+</script>
+</body>
+</html>
